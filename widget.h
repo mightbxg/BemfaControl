@@ -25,6 +25,7 @@ class Widget : public QWidget {
   void show_connection_status(bool connected);
   void send_message(int cmd, const QString& msg = "");
   void send_heart_beat();
+  void receive_message();
 
   void on_connected();
   void on_disconnected();

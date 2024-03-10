@@ -25,6 +25,7 @@ Widget::Widget(QWidget *parent)
   connect(socket, &QTcpSocket::connected, this, &Widget::on_connected);
   connect(socket, &QTcpSocket::disconnected, this, &Widget::on_disconnected);
   connect(socket, &QTcpSocket::errorOccurred, this, &Widget::handle_connection_error);
+  connect(socket, &QTcpSocket::readyRead, this, &Widget::receive_message);
 
   heart_beat->setInterval(30000);
   connect(heart_beat, &QTimer::timeout, this, &Widget::send_heart_beat);
@@ -84,7 +85,14 @@ void Widget::send_message(int cmd, const QString &msg) {
 void Widget::send_heart_beat() {
   if (socket->state() != QAbstractSocket::ConnectedState) return;
   socket->write("ping\r\n");
-  show_message("heart beat");
+}
+
+void Widget::receive_message() {
+  QString msg = QString::fromUtf8(socket->readAll());
+  msg = uid_removed(msg);
+  if (msg.endsWith('\n')) msg.removeLast();
+  if (msg.endsWith('\r')) msg.removeLast();
+  show_message(tr("Received message"), msg);
 }
 
 void Widget::on_connected() {
