@@ -6,6 +6,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui {
 class Widget;
 }
+class QTcpSocket;
 QT_END_NAMESPACE
 
 class Widget : public QWidget {
@@ -21,6 +22,7 @@ class Widget : public QWidget {
  private slots:
   void load_settings();
   void save_settings();
+  void show_connection_status(bool connected);
   void on_btn_connect_clicked();
 
  private:
@@ -29,4 +31,6 @@ class Widget : public QWidget {
   const QString config_filename{"config.ini"};
   QString uid;
   QString topic;
+
+  QTcpSocket* socket;
 };
