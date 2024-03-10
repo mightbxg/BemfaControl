@@ -1,12 +1,12 @@
 #pragma once
 
 #include <QWidget>
+#include <QtNetwork>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class Widget;
 }
-class QTcpSocket;
 QT_END_NAMESPACE
 
 class Widget : public QWidget {
@@ -23,7 +23,14 @@ class Widget : public QWidget {
   void load_settings();
   void save_settings();
   void show_connection_status(bool connected);
+  void send_message(int cmd, const QString& msg = "");
+  void send_heart_beat();
+
+  void on_connected();
+  void on_disconnected();
+  void handle_connection_error(QAbstractSocket::SocketError e);
   void on_btn_connect_clicked();
+  void on_btn_disconnect_clicked();
 
  private:
   Ui::Widget* ui;
@@ -33,4 +40,9 @@ class Widget : public QWidget {
   QString topic;
 
   QTcpSocket* socket;
+  QTimer* heart_beat;
+
+ protected:
+  void keyPressEvent(QKeyEvent* event);
+  void closeEvent(QCloseEvent* event);
 };
